@@ -8,13 +8,13 @@ int main()
 
 	while (counter < 10)
 	{
-		std::cout << "Enter the number of units sold by salesperson " << counter + 1 << ": ";
+		counter = counter + 1;
+
+		std::cout << "Enter the number of units sold by salesperson " << counter << ": ";
 		std::cin >> number;
 
 		if (number > largest)
 			largest = number;
-
-		counter = counter + 1;
 	}
 
 	std::cout << "The largest number of units sold is " << largest << ". ";
