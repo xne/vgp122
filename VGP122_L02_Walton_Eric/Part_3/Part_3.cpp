@@ -18,7 +18,7 @@ int main()
 	std::cin >> smallest;
 	counter = counter + 1;
 
-	while (counter < total - 1)
+	while (counter < total)
 	{
 		std::cout << "Enter number " << counter + 1 << ": ";
 		std::cin >> number;
