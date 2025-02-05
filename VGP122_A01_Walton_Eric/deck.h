@@ -1,0 +1,36 @@
+#ifndef XN_DECK
+#define XN_DECK
+
+#include <random>
+
+class Deck
+{
+public:
+	Deck()
+	{
+		unsigned short index = 0;
+		for (unsigned char suit : mSuits)
+			for (unsigned short value : mValues)
+				mDeck[index++] = { suit, value };
+
+		std::random_device rd;
+		std::mt19937 g(rd());
+
+		std::shuffle(mDeck, mDeck + mSize, g);
+	}
+
+	Card draw() const
+	{
+		static unsigned short index = 0;
+		return mDeck[index++];
+	}
+
+private:
+	const unsigned char mSuits[4] = { 'C', 'D', 'H', 'S' };
+	const unsigned short mValues[13] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+	static const unsigned short mSize = 52;
+
+	Card mDeck[mSize] = { 0 };
+};
+
+#endif

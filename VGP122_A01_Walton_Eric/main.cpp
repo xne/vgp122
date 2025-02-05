@@ -1,38 +1,29 @@
 #include <algorithm>
+#include <cctype>
 #include <iostream>
 #include <random>
 
 #include "util.h"
 #include "card.h"
+#include "deck.h"
+#include "player.h"
 
 // constants
 const unsigned short minBet = 2;
 const unsigned short maxBet = 500;
 const unsigned short startingCredits = 1000;
 
-const unsigned char cardSuits[] = { 'C', 'D', 'H', 'S' };
-const unsigned short cardValues[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
-
-const unsigned short deckSize = 52;
-
-// the maximum number of cards a player can hold without going over 21
-const unsigned short maxHandSize = 11;
-
 // variables
 unsigned short credits;
 unsigned short bet;
-Card deck[deckSize] = { 0 };
-Card dealer[maxHandSize] = { 0 };
-Card hand[maxHandSize] = { 0 };
+Deck* deck;
+Player* player;
+Player* dealer;
 
 // functions
 void startGame();
 void gameLoop();
-void initDeck();
-Card draw();
-void addToHand(Card);
-void addToDealer(Card);
-unsigned short getHandValue();
+void endGame();
 
 void hit();
 void stand();
@@ -42,8 +33,17 @@ void pass();
 
 int main()
 {
-	startGame();
-	gameLoop();
+	char playAgain;
+	do
+	{
+		startGame();
+		gameLoop();
+		endGame();
+
+		std::cout << std::endl;
+		std::cout << "Would you like to play again? (Y/N): ";
+		std::cin >> playAgain;
+	} while (std::toupper(playAgain) == 'Y');
 
 	return 0;
 }
@@ -51,7 +51,10 @@ int main()
 void startGame()
 {
 	// setup
-	initDeck();
+	deck = new Deck();
+	player = new Player();
+	dealer = new Player();
+
 	credits = startingCredits;
 	std::cout << "You have " << credits << " credits. " << std::endl;
 	std::cout << std::endl;
@@ -66,89 +69,59 @@ void startGame()
 	std::cout << std::endl;
 
 	// starting deal
-	Card card = draw();
+	auto card = deck->draw();
 	std::cout << "You are dealt: " << card << ". " << std::endl;
-	addToHand(card);
+	player->addCard(card);
 
-	card = draw();
+	card = deck->draw();
 	std::cout << "Dealer is dealt: " << card << ". " << std::endl;
-	addToDealer(card);
+	dealer->addCard(card);
 
-	card = draw();
+	card = deck->draw();
 	std::cout << "You are dealt: " << card << ". " << std::endl;
-	addToHand(card);
+	player->addCard(card);
 
-	card = draw();
+	card = deck->draw();
 	std::cout << "Dealer is dealt a card. " << std::endl;
-	addToDealer(card);
+	dealer->addCard(card);
 
 	std::cout << std::endl;
 }
 
 void gameLoop()
 {
-	std::cout << "The value of your hand is: " << getHandValue() << ". " << std::endl;
+	std::cout << "The value of your hand is: " << player->getHandValue() << ". " << std::endl;
 	std::cout << "You may Hit (H), Stand (S), Split (P), Double Down (D), or Pass (X): ";
-}
 
-void initDeck()
-{
-	// init deck array
-	unsigned short index = 0;
-	for (unsigned char suit : cardSuits)
-		for (unsigned short value : cardValues)
-			deck[index++] = { suit, value };
-
-	// shuffle
-	std::random_device rd;
-	std::mt19937 g(rd());
-
-	std::shuffle(deck, deck + deckSize, g);
-}
-
-Card draw()
-{
-	static unsigned short index = 0;
-	return deck[index++];
-}
-
-void addToHand(Card card)
-{
-	static unsigned short index = 0;
-	hand[index++] = card;
-}
-
-void addToDealer(Card card)
-{
-	static unsigned short index = 0;
-	dealer[index++] = card;
-}
-
-unsigned short getHandValue()
-{
-	unsigned short result = 0;
-	unsigned short aces = 0;
-
-	// find hand total when aces have a value of 1
-	for (Card card : hand)
+	char choice;
+	std::cin >> choice;
+	switch (std::toupper(choice))
 	{
-		if (card.value == 1)
-			aces++;
-
-		if (card.value > 10)
-			result += 10;
-		else
-			result += card.value;
+	case 'H':
+		std::cout << "You chose to Hit. " << std::endl;
+		break;
+	case 'S':
+		std::cout << "You chose to Stand. " << std::endl;
+		break;
+	case 'P':
+		std::cout << "You chose to Split. " << std::endl;
+		break;
+	case 'D':
+		std::cout << "You chose to Double Down. " << std::endl;
+		break;
+	case 'X':
+		std::cout << "You chose to Pass. " << std::endl;
+		break;
+	default:
+		break;
 	}
+}
 
-	// increase value of aces
-	while (aces > 0 && result <= 11)
-	{
-		aces--;
-		result += 10;
-	}
-
-	return result;
+void endGame()
+{
+	delete deck;
+	delete player;
+	delete dealer;
 }
 
 void hit()
