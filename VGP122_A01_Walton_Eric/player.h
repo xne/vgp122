@@ -6,11 +6,6 @@
 class Player
 {
 public:
-	Player()
-	{
-
-	}
-
 	void addCard(Card card)
 	{
 		static unsigned short index = 0;

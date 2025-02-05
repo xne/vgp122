@@ -3,6 +3,9 @@
 
 #include <random>
 
+const unsigned char mSuits[] = { 'C', 'D', 'H', 'S' };
+const unsigned short mValues[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+
 class Deck
 {
 public:
@@ -26,10 +29,7 @@ public:
 	}
 
 private:
-	const unsigned char mSuits[4] = { 'C', 'D', 'H', 'S' };
-	const unsigned short mValues[13] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
 	static const unsigned short mSize = 52;
-
 	Card mDeck[mSize] = { 0 };
 };
 

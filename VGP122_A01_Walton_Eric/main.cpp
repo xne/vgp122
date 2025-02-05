@@ -16,9 +16,9 @@ const unsigned short startingCredits = 1000;
 // variables
 unsigned short credits;
 unsigned short bet;
-Deck* deck;
-Player* player;
-Player* dealer;
+Deck deck;
+Player player;
+Player dealer;
 
 // functions
 void startGame();
@@ -51,9 +51,9 @@ int main()
 void startGame()
 {
 	// setup
-	deck = new Deck();
-	player = new Player();
-	dealer = new Player();
+	deck = {};
+	player = {};
+	dealer = {};
 
 	credits = startingCredits;
 	std::cout << "You have " << credits << " credits. " << std::endl;
@@ -69,28 +69,28 @@ void startGame()
 	std::cout << std::endl;
 
 	// starting deal
-	auto card = deck->draw();
+	auto card = deck.draw();
 	std::cout << "You are dealt: " << card << ". " << std::endl;
-	player->addCard(card);
+	player.addCard(card);
 
-	card = deck->draw();
+	card = deck.draw();
 	std::cout << "Dealer is dealt: " << card << ". " << std::endl;
-	dealer->addCard(card);
+	dealer.addCard(card);
 
-	card = deck->draw();
+	card = deck.draw();
 	std::cout << "You are dealt: " << card << ". " << std::endl;
-	player->addCard(card);
+	player.addCard(card);
 
-	card = deck->draw();
+	card = deck.draw();
 	std::cout << "Dealer is dealt a card. " << std::endl;
-	dealer->addCard(card);
+	dealer.addCard(card);
 
 	std::cout << std::endl;
 }
 
 void gameLoop()
 {
-	std::cout << "The value of your hand is: " << player->getHandValue() << ". " << std::endl;
+	std::cout << "The value of your hand is: " << player.getHandValue() << ". " << std::endl;
 	std::cout << "You may Hit (H), Stand (S), Split (P), Double Down (D), or Pass (X): ";
 
 	char choice;
@@ -119,9 +119,7 @@ void gameLoop()
 
 void endGame()
 {
-	delete deck;
-	delete player;
-	delete dealer;
+
 }
 
 void hit()
