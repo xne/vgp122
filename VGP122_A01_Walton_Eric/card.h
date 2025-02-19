@@ -44,7 +44,7 @@ std::ostream& operator<<(std::ostream& os, const Card& card)
 	case 'H':
 		os << "Hearts";
 		break;
-	default: // should only ever be 'S'
+	case 'S':
 		os << "Spades";
 		break;
 	}
