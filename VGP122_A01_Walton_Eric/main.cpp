@@ -19,9 +19,13 @@ unsigned short bet;
 Deck deck;
 Player player;
 Player dealer;
+char playAgain;
+
+Card secondCard;
+bool secondCardRevealed = false;
 
 // functions
-void startGame();
+bool startGame();
 bool gameLoop();
 void endGame();
 
@@ -35,27 +39,28 @@ void pass();
 
 int main()
 {
-	char playAgain;
 	do
 	{
-		startGame();
+		if (!startGame())
+		{
+			endGame();
+			continue;
+		}
+
 		while (gameLoop()) {};
 		endGame();
-
-		std::cout << std::endl;
-		std::cout << "Would you like to play again? (Y/N): ";
-		playAgain = getOption("YN");
 	} while (playAgain == 'Y');
 
 	return 0;
 }
 
-void startGame()
+bool startGame()
 {
 	// setup
 	deck = {};
 	player = {};
 	dealer = {};
+	secondCardRevealed = false;
 
 	std::cout << "You have " << credits << " credits. " << std::endl;
 	std::cout << std::endl;
@@ -79,11 +84,44 @@ void startGame()
 	std::cout << "You are dealt: " << card << ". " << std::endl;
 	player.addCard(card);
 
-	card = deck.draw();
-	std::cout << "Dealer is dealt a card. " << std::endl;
-	dealer.addCard(card);
+	if (dealer.getHandValue() == 1 || dealer.getHandValue() == 10)
+	{
+		card = deck.draw();
+		std::cout << "Dealer is dealt: " << card << ". " << std::endl;
+		secondCardRevealed = true;
+		dealer.addCard(card);
+	}
+	else
+	{
+		secondCard = deck.draw();
+		std::cout << "Dealer is dealt a card. " << std::endl;
+		dealer.addCard(secondCard);
+	}
 
 	std::cout << std::endl;
+
+	// handle naturals
+	if (player.getHandValue() == 21 && dealer.getHandValue() == 21)
+	{
+		if (!secondCardRevealed)
+			std::cout << "Dealer has second card: " << secondCard << std::endl;
+		std::cout << "Stand-off!" << std::endl;
+		return false;
+	}
+	else if (player.getHandValue() == 21)
+	{
+		std::cout << "Blackjack!" << std::endl;
+		return false;
+	}
+	else if (dealer.getHandValue() == 21)
+	{
+		if (!secondCardRevealed)
+			std::cout << "Dealer has second card: " << secondCard << std::endl;
+		std::cout << "Bust!" << std::endl;
+		return false;
+	}
+
+	return true;
 }
 
 bool gameLoop()
@@ -116,7 +154,17 @@ bool gameLoop()
 
 void endGame()
 {
-
+	if (credits > minBet)
+	{
+		std::cout << std::endl;
+		std::cout << "Would you like to play again? (Y/N): ";
+		playAgain = getOption("YN");
+	}
+	else
+	{
+		std::cout << "Out of credits!" << std::endl;
+		playAgain = 'N';
+	}
 }
 
 void getBet()
