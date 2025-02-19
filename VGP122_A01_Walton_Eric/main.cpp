@@ -44,8 +44,8 @@ int main()
 
 		std::cout << std::endl;
 		std::cout << "Would you like to play again? (Y/N): ";
-		std::cin >> playAgain;
-	} while (std::toupper(playAgain) == 'Y');
+		playAgain = getOption("YN");
+	} while (playAgain == 'Y');
 
 	return 0;
 }
@@ -93,10 +93,9 @@ void gameLoop()
 	std::cout << std::endl;
 	std::cout << "You may Hit (H), Stand (S), Split (P), Double Down (D), or Pass (X): ";
 
-	char choice;
-	std::cin >> choice;
+	char choice = getOption("HSPDX");
 
-	switch (std::toupper(choice))
+	switch (choice)
 	{
 	case 'H':
 		hit();

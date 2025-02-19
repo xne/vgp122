@@ -53,4 +53,21 @@ int getInt(int min, int max)
 	}
 }
 
+char getOption(const char* options)
+{
+	char tempChr;
+
+	while (true)
+	{
+		std::cin >> tempChr;
+		tempChr = std::toupper(tempChr);
+
+		for (int i = 0; options[i] != '\0'; i++)
+			if (std::toupper(options[i]) == tempChr)
+				return tempChr;
+
+		std::cout << "\tMust be one of " << options << ": ";
+	}
+}
+
 #endif
