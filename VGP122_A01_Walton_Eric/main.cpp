@@ -14,7 +14,7 @@ const unsigned short maxBet = 500;
 const unsigned short startingCredits = 1000;
 
 // variables
-unsigned short credits;
+unsigned short credits = startingCredits;
 unsigned short bet;
 Deck deck;
 Player player;
@@ -22,7 +22,7 @@ Player dealer;
 
 // functions
 void startGame();
-void gameLoop();
+bool gameLoop();
 void endGame();
 
 void getBet();
@@ -39,7 +39,7 @@ int main()
 	do
 	{
 		startGame();
-		gameLoop();
+		while (gameLoop()) {};
 		endGame();
 
 		std::cout << std::endl;
@@ -57,7 +57,6 @@ void startGame()
 	player = {};
 	dealer = {};
 
-	credits = startingCredits;
 	std::cout << "You have " << credits << " credits. " << std::endl;
 	std::cout << std::endl;
 
@@ -87,7 +86,7 @@ void startGame()
 	std::cout << std::endl;
 }
 
-void gameLoop()
+bool gameLoop()
 {
 	std::cout << "The value of your hand is: " << player.getHandValue() << ". " << std::endl;
 	std::cout << std::endl;
@@ -111,8 +110,6 @@ void gameLoop()
 		break;
 	case 'X':
 		pass();
-		break;
-	default:
 		break;
 	}
 }
