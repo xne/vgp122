@@ -128,6 +128,7 @@ bool gameLoop()
 {
 	std::cout << "The value of your hand is: " << player.getHandValue() << ". " << std::endl;
 	std::cout << std::endl;
+
 	std::cout << "You may Hit (H), Stand (S), Split (P), Double Down (D), or Pass (X): ";
 
 	char choice = getOption("HSPDX");
@@ -150,6 +151,26 @@ bool gameLoop()
 		pass();
 		break;
 	}
+
+	if (player.getHandValue() == 21)
+	{
+		std::cout << "Blackjack!" << std::endl;
+		return false;
+	}
+
+	if (player.getHandValue() > 21)
+	{
+		std::cout << "Bust!" << std::endl;
+		return false;
+	}
+
+	if (!secondCardRevealed)
+	{
+		std::cout << "Dealer has second card: " << secondCard << std::endl;
+		secondCardRevealed = true;
+	}
+
+	return true;
 }
 
 void endGame()
