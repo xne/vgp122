@@ -90,26 +90,28 @@ void startGame()
 void gameLoop()
 {
 	std::cout << "The value of your hand is: " << player.getHandValue() << ". " << std::endl;
+	std::cout << std::endl;
 	std::cout << "You may Hit (H), Stand (S), Split (P), Double Down (D), or Pass (X): ";
 
 	char choice;
 	std::cin >> choice;
+
 	switch (std::toupper(choice))
 	{
 	case 'H':
-		std::cout << "You chose to Hit. " << std::endl;
+		hit();
 		break;
 	case 'S':
-		std::cout << "You chose to Stand. " << std::endl;
+		stand();
 		break;
 	case 'P':
-		std::cout << "You chose to Split. " << std::endl;
+		split();
 		break;
 	case 'D':
-		std::cout << "You chose to Double Down. " << std::endl;
+		doubleDown();
 		break;
 	case 'X':
-		std::cout << "You chose to Pass. " << std::endl;
+		pass();
 		break;
 	default:
 		break;
@@ -133,25 +135,34 @@ void getBet()
 
 void hit()
 {
+	std::cout << "You chose to Hit. " << std::endl;
+	std::cout << std::endl;
 
+	auto card = deck.draw();
+	std::cout << "You are dealt: " << card << ". " << std::endl;
+	player.addCard(card);
 }
 
 void stand()
 {
-
+	std::cout << "You chose to Stand. " << std::endl;
+	std::cout << std::endl;
 }
 
 void split()
 {
-
+	std::cout << "You chose to Split. " << std::endl;
+	std::cout << std::endl;
 }
 
 void doubleDown()
 {
-
+	std::cout << "You chose to Double Down. " << std::endl;
+	std::cout << std::endl;
 }
 
 void pass()
 {
-
+	std::cout << "You chose to Pass. " << std::endl;
+	std::cout << std::endl;
 }
