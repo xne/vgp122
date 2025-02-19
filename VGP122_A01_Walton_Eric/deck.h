@@ -22,14 +22,14 @@ public:
 		std::shuffle(mDeck, mDeck + mSize, g);
 	}
 
-	Card draw() const
+	Card draw()
 	{
-		static unsigned short index = 0;
-		return mDeck[index++];
+		return mDeck[mNextCard++];
 	}
 
 private:
 	static const unsigned short mSize = 52;
+	unsigned short mNextCard = 0;
 	Card mDeck[mSize] = { 0 };
 };
 

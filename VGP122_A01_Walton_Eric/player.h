@@ -8,8 +8,7 @@ class Player
 public:
 	void addCard(Card card)
 	{
-		static unsigned short index = 0;
-		mHand[index++] = card;
+		mHand[mNextCard++] = card;
 	}
 
 	unsigned short getHandValue()
@@ -46,6 +45,7 @@ public:
 private:
 	// the maximum number of cards a player can hold without going over 21
 	static const unsigned short maxHandSize = 11;
+	unsigned short mNextCard = 0;
 
 	Card mHand[maxHandSize] = { 0 };
 };
