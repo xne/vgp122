@@ -25,6 +25,8 @@ void startGame();
 void gameLoop();
 void endGame();
 
+void getBet();
+
 void hit();
 void stand();
 void split();
@@ -61,10 +63,7 @@ void startGame()
 
 	// starting bet
 	std::cout << "Place your starting bet: ";
-	if (credits < maxBet)
-		bet = getInt(minBet, credits);
-	else
-		bet = getInt(minBet, maxBet);
+	getBet();
 	std::cout << "You bet " << bet << " credits. " << std::endl;
 	std::cout << std::endl;
 
@@ -120,6 +119,16 @@ void gameLoop()
 void endGame()
 {
 
+}
+
+void getBet()
+{
+	if (credits < maxBet)
+		bet = getInt(minBet, credits);
+	else
+		bet = getInt(minBet, maxBet);
+
+	credits -= bet;
 }
 
 void hit()
