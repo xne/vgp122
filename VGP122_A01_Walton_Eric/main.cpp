@@ -90,8 +90,8 @@ bool startGame()
 	std::cout << "You are dealt: " << card << ". " << std::endl;
 	player.addCard(card);
 
-	// reveal the second card if the first card is an ace or face card
-	if (dealer.getHandValue() == 1 || dealer.getHandValue() == 10)
+	// reveal the second card if the first card is a ten-card or an ace
+	if (dealer.getHandValue() >= 10)
 	{
 		card = deck.draw();
 		std::cout << "Dealer is dealt: " << card << ". " << std::endl;
