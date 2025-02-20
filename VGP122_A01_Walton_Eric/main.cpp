@@ -128,7 +128,8 @@ bool startGame()
 	{
 		if (!secondCardRevealed)
 			std::cout << "Dealer has second card: " << secondCard << std::endl;
-		std::cout << "Bust! You lose " << bet << " credits. " << std::endl;
+		std::cout << "Dealer got a natural!" << std::endl;
+		std::cout << "You lose " << bet << " credits. " << std::endl;
 		credits -= bet;
 		return false;
 	}
