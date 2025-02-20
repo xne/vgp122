@@ -183,6 +183,7 @@ bool gameLoop()
 		return false;
 	}
 
+	// handle blackjack and 21 stand-off
 	if (player.getHandValue() == 21)
 	{
 		if (dealer.getHandValue() != 21)
@@ -199,6 +200,7 @@ bool gameLoop()
 		return false;
 	}
 
+	// handle bust
 	if (player.getHandValue() > 21)
 	{
 		std::cout << "Bust! You lose " << bet << " credits. " << std::endl;
@@ -206,12 +208,14 @@ bool gameLoop()
 		return false;
 	}
 
+	// reveal the dealer's second card, if we haven't already
 	if (!secondCardRevealed)
 	{
 		std::cout << "Dealer has second card: " << secondCard << std::endl;
 		secondCardRevealed = true;
 	}
 
+	// handle round loss
 	if (choice == 'S' && dealer.getHandValue() > player.getHandValue())
 	{
 		std::cout << "You lost the round!" << std::endl;
@@ -220,12 +224,14 @@ bool gameLoop()
 		return false;
 	}
 	
+	// dealer must hit
 	if (dealer.getHandValue() < 17)
 	{
 		auto card = deck.draw();
 		std::cout << "Dealer is dealt: " << card << ". " << std::endl;
 		dealer.addCard(card);
 
+		// handle dealer bust
 		if (dealer.getHandValue() > 21)
 		{
 			std::cout << "You win the round!" << std::endl;
@@ -234,10 +240,12 @@ bool gameLoop()
 			return false;
 		}
 	}
+	// dealer must stand
 	else
 	{
 		std::cout << "Dealer must stand. " << std::endl;
 
+		// handle round win
 		if (player.getHandValue() > dealer.getHandValue())
 		{
 			std::cout << "You win the round!" << std::endl;
@@ -246,6 +254,7 @@ bool gameLoop()
 			return false;
 		}
 		
+		// handle stand-off
 		if (choice == 'S' && dealer.getHandValue() == player.getHandValue())
 		{
 			std::cout << "It's a stand-off!" << std::endl;
