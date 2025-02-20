@@ -24,7 +24,9 @@ char playAgain;
 Card secondCard;
 bool secondCardRevealed = false;
 
+bool canSplit = false;
 bool canPass = true;
+bool canDoubleDown = false;
 
 // functions
 bool startGame();
@@ -136,9 +138,30 @@ bool gameLoop()
 	std::cout << "The value of your hand is: " << player.getHandValue() << ". " << std::endl;
 	std::cout << std::endl;
 
-	std::cout << "You may Hit (H), Stand (S), Split (P), Double Down (D), or Pass (X): ";
+	std::cout << "You may Hit (H), Stand (S)";
+	std::string options = "HS";
 
-	char choice = getOption("HSPDX");
+	if (canSplit)
+	{
+		std::cout << ", Split (P)";
+		options += "P";
+	}
+
+	if (canDoubleDown)
+	{
+		std::cout << ", Double Down (D)";
+		options += "D";
+	}
+
+	if (canPass)
+	{
+		std::cout << ", Pass (X)";
+		options += "X";
+	}
+
+	std::cout << ": ";
+
+	char choice = getOption(options.c_str());
 
 	switch (choice)
 	{
