@@ -66,6 +66,7 @@ bool startGame()
 	player = {};
 	dealer = {};
 	secondCardRevealed = false;
+	canPass = true;
 
 	std::cout << "You have " << credits << " credits. " << std::endl;
 	std::cout << std::endl;
@@ -179,7 +180,7 @@ bool gameLoop()
 		break;
 	case 'X':
 		pass();
-		break;
+		return false;
 	}
 
 	if (player.getHandValue() == 21)
@@ -254,6 +255,7 @@ bool gameLoop()
 		}
 	}
 
+	// can only pass on the first round
 	canPass = false;
 
 	return true;
