@@ -39,6 +39,7 @@ void pass();
 
 int main()
 {
+	std::cout << "Welcome to Blackjack!" << std::endl;
 	do
 	{
 		if (!startGame())
@@ -105,12 +106,12 @@ bool startGame()
 	{
 		if (!secondCardRevealed)
 			std::cout << "Dealer has second card: " << secondCard << std::endl;
-		std::cout << "Stand-off!" << std::endl;
+		std::cout << "It's a stand-off!" << std::endl;
 		return false;
 	}
 	else if (player.getHandValue() == 21)
 	{
-		std::cout << "Blackjack!" << std::endl;
+		std::cout << "Wow, you're a natural!" << std::endl;
 		return false;
 	}
 	else if (dealer.getHandValue() == 21)
@@ -154,7 +155,15 @@ bool gameLoop()
 
 	if (player.getHandValue() == 21)
 	{
-		std::cout << "Blackjack!" << std::endl;
+		if (dealer.getHandValue() != 21)
+		{
+			std::cout << "Blackjack!" << std::endl;
+		}
+		else
+		{
+			std::cout << "It's a stand-off!" << std::endl;
+		}
+
 		return false;
 	}
 
