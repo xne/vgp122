@@ -112,6 +112,8 @@ bool startGame()
 	else if (player.getHandValue() == 21)
 	{
 		std::cout << "Wow, you're a natural!" << std::endl;
+		std::cout << "You collect " << bet * 1.5f << " credits. " << std::endl;
+		credits += bet * 1.5f;
 		return false;
 	}
 	else if (dealer.getHandValue() == 21)
@@ -119,6 +121,8 @@ bool startGame()
 		if (!secondCardRevealed)
 			std::cout << "Dealer has second card: " << secondCard << std::endl;
 		std::cout << "Bust!" << std::endl;
+		std::cout << "You lose " << bet << " credits. " << std::endl;
+		credits -= bet;
 		return false;
 	}
 
@@ -158,6 +162,8 @@ bool gameLoop()
 		if (dealer.getHandValue() != 21)
 		{
 			std::cout << "Blackjack!" << std::endl;
+			std::cout << "You collect " << bet << " credits. " << std::endl;
+			credits += bet;
 		}
 		else
 		{
@@ -170,6 +176,8 @@ bool gameLoop()
 	if (player.getHandValue() > 21)
 	{
 		std::cout << "Bust!" << std::endl;
+		std::cout << "You lose " << bet << " credits. " << std::endl;
+		credits -= bet;
 		return false;
 	}
 
@@ -203,8 +211,6 @@ void getBet()
 		bet = getInt(minBet, credits);
 	else
 		bet = getInt(minBet, maxBet);
-
-	credits -= bet;
 }
 
 void hit()
