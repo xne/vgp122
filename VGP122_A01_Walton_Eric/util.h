@@ -55,12 +55,12 @@ int getInt(int min, int max)
 
 char getOption(const char* options)
 {
-	char tempChr;
+	std::string tempStr;
 
 	while (true)
 	{
-		std::cin >> tempChr;
-		tempChr = std::toupper(tempChr);
+		std::cin >> tempStr;
+		auto tempChr = std::toupper(tempStr[0]);
 
 		for (int i = 0; options[i] != '\0'; i++)
 			if (std::toupper(options[i]) == tempChr)
