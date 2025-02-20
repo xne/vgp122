@@ -212,6 +212,14 @@ bool gameLoop()
 		secondCardRevealed = true;
 	}
 
+	if (choice == 'S' && dealer.getHandValue() > player.getHandValue())
+	{
+		std::cout << "You lost the round!" << std::endl;
+		std::cout << "You lose " << bet << " credits. " << std::endl;
+		credits -= bet;
+		return false;
+	}
+	
 	if (dealer.getHandValue() < 17)
 	{
 		auto card = deck.draw();
@@ -237,20 +245,10 @@ bool gameLoop()
 			credits += bet;
 			return false;
 		}
-
-		if (choice == 'S')
+		
+		if (choice == 'S' && dealer.getHandValue() == player.getHandValue())
 		{
-			if (dealer.getHandValue() > player.getHandValue())
-			{
-				std::cout << "You lost the round!" << std::endl;
-				std::cout << "You lose " << bet << " credits. " << std::endl;
-				credits -= bet;
-			}
-			else // hand values are the same
-			{
-				std::cout << "It's a stand-off!" << std::endl;
-			}
-
+			std::cout << "It's a stand-off!" << std::endl;
 			return false;
 		}
 	}
