@@ -187,6 +187,25 @@ bool gameLoop()
 		secondCardRevealed = true;
 	}
 
+	if (dealer.getHandValue() < 17)
+	{
+		auto card = deck.draw();
+		std::cout << "Dealer is dealt: " << card << ". " << std::endl;
+		dealer.addCard(card);
+
+		if (dealer.getHandValue() > 21)
+		{
+			std::cout << "You win the round!" << std::endl;
+			std::cout << "You collect " << bet << " credits. " << std::endl;
+			credits += bet;
+			return false;
+		}
+	}
+	else
+	{
+		std::cout << "Dealer must stand. " << std::endl;
+	}
+
 	return true;
 }
 
