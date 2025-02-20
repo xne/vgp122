@@ -228,6 +228,30 @@ bool gameLoop()
 	else
 	{
 		std::cout << "Dealer must stand. " << std::endl;
+
+		if (player.getHandValue() > dealer.getHandValue())
+		{
+			std::cout << "You win the round!" << std::endl;
+			std::cout << "You collect " << bet << " credits. " << std::endl;
+			credits += bet;
+			return false;
+		}
+
+		if (choice == 'S')
+		{
+			if (dealer.getHandValue() > player.getHandValue())
+			{
+				std::cout << "You lost the round!" << std::endl;
+				std::cout << "You lose " << bet << " credits. " << std::endl;
+				credits -= bet;
+			}
+			else // hand values are the same
+			{
+				std::cout << "It's a stand-off!" << std::endl;
+			}
+
+			return false;
+		}
 	}
 
 	canPass = false;
