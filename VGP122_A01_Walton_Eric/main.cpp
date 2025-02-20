@@ -115,14 +115,16 @@ bool startGame()
 		std::cout << "It's a stand-off!" << std::endl;
 		return false;
 	}
-	else if (player.getHandValue() == 21)
+
+	if (player.getHandValue() == 21)
 	{
 		std::cout << "Wow, you're a natural!" << std::endl;
 		std::cout << "You collect " << bet * 1.5f << " credits. " << std::endl;
 		credits += bet * 1.5f;
 		return false;
 	}
-	else if (dealer.getHandValue() == 21)
+	
+	if (dealer.getHandValue() == 21)
 	{
 		if (!secondCardRevealed)
 			std::cout << "Dealer has second card: " << secondCard << std::endl;
