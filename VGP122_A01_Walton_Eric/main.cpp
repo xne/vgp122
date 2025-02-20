@@ -24,6 +24,8 @@ char playAgain;
 Card secondCard;
 bool secondCardRevealed = false;
 
+bool canPass = true;
+
 // functions
 bool startGame();
 bool gameLoop();
@@ -205,6 +207,8 @@ bool gameLoop()
 		std::cout << "Dealer must stand. " << std::endl;
 	}
 
+	canPass = false;
+
 	return true;
 }
 
@@ -262,5 +266,7 @@ void doubleDown()
 void pass()
 {
 	std::cout << "You chose to Pass. " << std::endl;
+	std::cout << "You lose " << bet * 0.5f << " credits. " << std::endl;
+	credits -= bet * 0.5f;
 	std::cout << std::endl;
 }
