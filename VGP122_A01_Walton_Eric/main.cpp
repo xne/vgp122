@@ -21,7 +21,7 @@ Player player;
 Player dealer;
 char playAgain;
 
-Card secondCard;
+Card secondCard; // dealer's second card dealt
 bool secondCardRevealed = false;
 
 bool canSplit = false;
@@ -89,6 +89,9 @@ bool startGame()
 	card = deck.draw();
 	std::cout << "You are dealt: " << card << ". " << std::endl;
 	player.addCard(card);
+
+	// check if we can double down
+	canDoubleDown = credits >= bet * 2 && player.getHandValue() >= 9 && player.getHandValue() <= 11;
 
 	// reveal the second card if the first card is a ten-card or an ace
 	if (dealer.getHandValue() >= 10)
@@ -265,8 +268,9 @@ bool gameLoop()
 		}
 	}
 
-	// can only pass on the first round
+	// can only pass or double down on the first round
 	canPass = false;
+	canDoubleDown = false;
 
 	return true;
 }
@@ -320,6 +324,12 @@ void doubleDown()
 {
 	std::cout << "You chose to Double Down. " << std::endl;
 	std::cout << std::endl;
+
+	bet *= 2;
+
+	auto card = deck.draw();
+	std::cout << "You are dealt: " << card << ". " << std::endl;
+	player.addCard(card);
 }
 
 void pass()
