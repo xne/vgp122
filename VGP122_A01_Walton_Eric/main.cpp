@@ -21,21 +21,25 @@ Player player;
 Player dealer;
 char playAgain;
 
-Card secondCard; // dealer's second card dealt
-bool secondCardRevealed = false;
+Card dealerSecondCard; // dealer's second card dealt
+bool dealerSecondCardRevealed = false;
 
-bool canSplit = false;
-bool canPass = true;
-bool canDoubleDown = false;
+bool canHit;
+bool canSplit;
+bool canPass;
+bool canDoubleDown;
+
+Card playerFirstCard; // player's first card dealt
+Card playerSecondCard;
 
 // functions
 bool startGame();
-bool gameLoop();
+bool gameLoop(Player &);
 void endGame();
 
 void getBet();
 
-void hit();
+void hit(Player &);
 void stand();
 void split();
 void doubleDown();
@@ -52,7 +56,7 @@ int main()
 			continue;
 		}
 
-		while (gameLoop()) {};
+		while (gameLoop(player)) {};
 		endGame();
 	} while (playAgain == 'Y');
 
@@ -65,7 +69,8 @@ bool startGame()
 	deck = {};
 	player = {};
 	dealer = {};
-	secondCardRevealed = false;
+	dealerSecondCardRevealed = false;
+	canHit = true;
 	canPass = true;
 
 	std::cout << "You have " << credits << " credits. " << std::endl;
@@ -82,6 +87,8 @@ bool startGame()
 	std::cout << "You are dealt: " << card << ". " << std::endl;
 	player.addCard(card);
 
+	playerFirstCard = card;
+
 	card = deck.draw();
 	std::cout << "Dealer is dealt: " << card << ". " << std::endl;
 	dealer.addCard(card);
@@ -90,22 +97,21 @@ bool startGame()
 	std::cout << "You are dealt: " << card << ". " << std::endl;
 	player.addCard(card);
 
-	// check if we can double down
-	canDoubleDown = credits >= bet * 2 && player.getHandValue() >= 9 && player.getHandValue() <= 11;
+	playerSecondCard = card;
 
 	// reveal the second card if the first card is a ten-card or an ace
 	if (dealer.getHandValue() >= 10)
 	{
 		card = deck.draw();
 		std::cout << "Dealer is dealt: " << card << ". " << std::endl;
-		secondCardRevealed = true;
+		dealerSecondCardRevealed = true;
 		dealer.addCard(card);
 	}
 	else
 	{
-		secondCard = deck.draw();
+		dealerSecondCard = deck.draw();
 		std::cout << "Dealer is dealt a card. " << std::endl;
-		dealer.addCard(secondCard);
+		dealer.addCard(dealerSecondCard);
 	}
 
 	std::cout << std::endl;
@@ -113,74 +119,87 @@ bool startGame()
 	// handle naturals
 	if (player.getHandValue() == 21 && dealer.getHandValue() == 21)
 	{
-		if (!secondCardRevealed)
-			std::cout << "Dealer has second card: " << secondCard << std::endl;
+		if (!dealerSecondCardRevealed)
+			std::cout << "Dealer has second card: " << dealerSecondCard << std::endl;
+		std::cout << std::endl;
 		std::cout << "It's a stand-off!" << std::endl;
 		return false;
 	}
 
 	if (player.getHandValue() == 21)
 	{
+		std::cout << std::endl;
 		std::cout << "Wow, you're a natural!" << std::endl;
 		std::cout << "You collect " << bet * 1.5f << " credits. " << std::endl;
-		credits += bet * 1.5f;
+		credits += (int)(bet * 1.5f);
 		return false;
 	}
 	
 	if (dealer.getHandValue() == 21)
 	{
-		if (!secondCardRevealed)
-			std::cout << "Dealer has second card: " << secondCard << std::endl;
+		if (!dealerSecondCardRevealed)
+			std::cout << "Dealer has second card: " << dealerSecondCard << std::endl;
+		std::cout << std::endl;
 		std::cout << "Dealer got a natural!" << std::endl;
 		std::cout << "You lose " << bet << " credits. " << std::endl;
 		credits -= bet;
 		return false;
 	}
 
+	// check if we can double down
+	canDoubleDown = credits >= bet * 2 && player.getHandValue() >= 9 && player.getHandValue() <= 11;
+
+	// check if we can split
+	canSplit = credits >= bet * 2 && playerFirstCard.value == playerSecondCard.value;
+
 	return true;
 }
 
-bool gameLoop()
+bool gameLoop(Player &player)
 {
 	std::cout << "The value of your hand is: " << player.getHandValue() << ". " << std::endl;
-	std::cout << std::endl;
 
-	std::cout << "You may Hit (H), Stand (S)";
-	std::string options = "HS";
-
-	if (canSplit)
+	char choice = 'S';
+	if (canHit)
 	{
-		std::cout << ", Split (P)";
-		options += "P";
+		std::cout << std::endl;
+		std::cout << "You may Hit (H), Stand (S)";
+		std::string options = "HS";
+
+		if (canSplit)
+		{
+			std::cout << ", Split (P)";
+			options += "P";
+		}
+
+		if (canDoubleDown)
+		{
+			std::cout << ", Double Down (D)";
+			options += "D";
+		}
+
+		if (canPass)
+		{
+			std::cout << ", Pass (X)";
+			options += "X";
+		}
+
+		std::cout << ": ";
+
+		choice = getOption(options.c_str());
 	}
-
-	if (canDoubleDown)
-	{
-		std::cout << ", Double Down (D)";
-		options += "D";
-	}
-
-	if (canPass)
-	{
-		std::cout << ", Pass (X)";
-		options += "X";
-	}
-
-	std::cout << ": ";
-
-	char choice = getOption(options.c_str());
 
 	switch (choice)
 	{
 	case 'H':
-		hit();
+		hit(player);
 		break;
 	case 'S':
 		stand();
 		break;
 	case 'P':
 		split();
-		break;
+		return false;
 	case 'D':
 		doubleDown();
 		break;
@@ -215,10 +234,10 @@ bool gameLoop()
 	}
 
 	// reveal the dealer's second card, if we haven't already
-	if (!secondCardRevealed)
+	if (!dealerSecondCardRevealed)
 	{
-		std::cout << "Dealer has second card: " << secondCard << std::endl;
-		secondCardRevealed = true;
+		std::cout << "Dealer has second card: " << dealerSecondCard << std::endl;
+		dealerSecondCardRevealed = true;
 	}
 
 	// handle round loss
@@ -268,9 +287,10 @@ bool gameLoop()
 		}
 	}
 
-	// can only pass or double down on the first round
+	// can only pass, double down, or split on the first round
 	canPass = false;
 	canDoubleDown = false;
+	canSplit = false;
 
 	return true;
 }
@@ -298,7 +318,7 @@ void getBet()
 		bet = getInt(minBet, maxBet);
 }
 
-void hit()
+void hit(Player &player)
 {
 	std::cout << "You chose to Hit. " << std::endl;
 	std::cout << std::endl;
@@ -310,7 +330,8 @@ void hit()
 
 void stand()
 {
-	std::cout << "You chose to Stand. " << std::endl;
+	if (canHit) std::cout << "You chose to Stand. " << std::endl;
+	else std::cout << "You must Stand. " << std::endl;
 	std::cout << std::endl;
 }
 
@@ -318,6 +339,103 @@ void split()
 {
 	std::cout << "You chose to Split. " << std::endl;
 	std::cout << std::endl;
+
+	// can't do any of these if we split
+	canPass = false;
+	canDoubleDown = false;
+	canSplit = false;
+
+	// check if we can hit
+	canHit = playerFirstCard.value != 1;
+
+	Player leftHand = {};
+	leftHand.addCard(playerFirstCard);
+
+	Player rightHand = {};
+	rightHand.addCard(playerSecondCard);
+
+	std::cout << "Let's play your left hand first. " << std::endl;
+
+	auto card = deck.draw();
+	std::cout << "You are dealt: " << card << ". " << std::endl;
+	leftHand.addCard(card);
+
+	// handle naturals
+	if (leftHand.getHandValue() == 21)
+	{
+		std::cout << "Wow, you're a natural!" << std::endl;
+		if (canHit)
+		{
+			std::cout << "You collect " << bet * 1.5f << " credits. " << std::endl;
+			credits += (int)(bet * 1.5f);
+		}
+		else
+		{
+			std::cout << "You collect " << bet << " credits. " << std::endl;
+			credits += bet;
+		}
+	}
+	else while (gameLoop(leftHand)) {}
+
+	std::cout << std::endl;
+	std::cout << "Now, let's play your right hand. " << std::endl;
+
+	dealer = {};
+	dealerSecondCardRevealed = false;
+
+	card = deck.draw();
+	std::cout << "Dealer is dealt: " << card << ". " << std::endl;
+	dealer.addCard(card);
+
+	card = deck.draw();
+	std::cout << "You are dealt: " << card << ". " << std::endl;
+	rightHand.addCard(card);
+
+	// reveal the second card if the first card is a ten-card or an ace
+	if (dealer.getHandValue() >= 10)
+	{
+		card = deck.draw();
+		std::cout << "Dealer is dealt: " << card << ". " << std::endl;
+		dealerSecondCardRevealed = true;
+		dealer.addCard(card);
+	}
+	else
+	{
+		dealerSecondCard = deck.draw();
+		std::cout << "Dealer is dealt a card. " << std::endl;
+		dealer.addCard(dealerSecondCard);
+	}
+
+	// handle naturals
+	if (rightHand.getHandValue() == 21 && dealer.getHandValue() == 21)
+	{
+		if (!dealerSecondCardRevealed)
+			std::cout << "Dealer has second card: " << dealerSecondCard << std::endl;
+		std::cout << "It's a stand-off!" << std::endl;
+	}
+	else if (rightHand.getHandValue() == 21)
+	{
+		std::cout << "Wow, you're a natural!" << std::endl;
+		if (canHit)
+		{
+			std::cout << "You collect " << bet * 1.5f << " credits. " << std::endl;
+			credits += (int)(bet * 1.5f);
+		}
+		else
+		{
+			std::cout << "You collect " << bet << " credits. " << std::endl;
+			credits += bet;
+		}
+	}
+	else if (dealer.getHandValue() == 21)
+	{
+		if (!dealerSecondCardRevealed)
+			std::cout << "Dealer has second card: " << dealerSecondCard << std::endl;
+		std::cout << "Dealer got a natural!" << std::endl;
+		std::cout << "You lose " << bet << " credits. " << std::endl;
+		credits -= bet;
+	}
+	else while (gameLoop(rightHand)) {}
 }
 
 void doubleDown()
@@ -336,6 +454,5 @@ void pass()
 {
 	std::cout << "You chose to Pass. " << std::endl;
 	std::cout << "You lose " << bet * 0.5f << " credits. " << std::endl;
-	credits -= bet * 0.5f;
-	std::cout << std::endl;
+	credits -= (int)(bet * 0.5f);
 }
