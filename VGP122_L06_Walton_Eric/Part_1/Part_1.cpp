@@ -100,6 +100,8 @@ public:
 
 	std::string to_string() const
 	{
+		if (numerator > denominator)
+			return std::to_string(numerator % denominator) + ' ' + std::to_string(numerator / denominator) + '/' + std::to_string(denominator);
 		return std::to_string(numerator) + '/' + std::to_string(denominator);
 	}
 
