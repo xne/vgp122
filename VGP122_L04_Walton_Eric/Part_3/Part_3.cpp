@@ -15,7 +15,7 @@ int main()
 	for (int i = 0; i < std::strlen(str); i++)
 	{
 		for (int j = 0; j < std::strlen(vowels); j++)
-			if (std::tolower(str[i]) == vowels[j]) numv++;
+			if (std::tolower(str[i]) == vowels[i]) numv++;
 
 		for (int j = 0; j < std::strlen(consonants); j++)
 			if (std::tolower(str[j]) == consonants[j]) numc++;
